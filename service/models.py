@@ -49,13 +49,13 @@ class Product(db.Model):
     # Todo: Place the rest of your schema here...
 
     id = db.Column(db.Integer, primary_key=True)
-    # sku = db.Column(db.String(63), unique=True, nullable=False)
+    sku = db.Column(db.String(63), unique=True, nullable=False)
     name = db.Column(db.String(63), nullable=False)
     description = db.Column(db.String(256))
     price = db.Column(db.Numeric(10, 2), nullable=False)
     # stock = db.Column(db.Integer, nullable=False, default=0)
     # available = db.Column(db.Boolean(), nullable=False, default=True)
-    # image_url = db.Column(db.String(256))
+    image_url = db.Column(db.String(256))
     created_time = db.Column(db.DateTime, nullable=False, default=db.func.now())
     # need test or delete for the updated_at
     updated_time = db.Column(
@@ -106,9 +106,11 @@ class Product(db.Model):
         """Serializes a Product into a dictionary"""
         return {
             "id": self.id,
+            "sku": self.sku,
             "name": self.name,
             "description": self.description,
             "price": str(self.price),
+            "image_url": self.image_url,
             "created_time": self.created_time.isoformat(),
             "updated_time": self.updated_time.isoformat(),
         }
@@ -121,8 +123,10 @@ class Product(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
+            self.sku = data["sku"]  # SKU is required
             self.name = data["name"]
             self.description = data.get("description")
+            self.image_url = data.get("image_url")
             if "price" in data:
                 self.price = Decimal(data["price"])
         except AttributeError as error:

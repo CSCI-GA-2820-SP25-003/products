@@ -68,19 +68,32 @@ class TestProduct(TestCase):
     # Todo: Add your test cases here...
     def test_create_product(self):
         """It should Create a product and assert that it exists"""
-        product = Product(name="Test1", description="Test Description 1", price=123.21)
+        product = Product(
+            sku="TEST01",
+            name="Test1",
+            description="Test Description 1",
+            price=123.21,
+            image_url="http://www.nyu.edu",
+        )
         self.assertEqual(str(product), "<Product Test1 id=[None]>")
         self.assertTrue(product is not None)
         self.assertEqual(product.id, None)
+        self.assertEqual(product.sku, "TEST01")
         self.assertEqual(product.name, "Test1")
         self.assertEqual(product.description, "Test Description 1")
         self.assertEqual(float(product.price), 123.21)
+        self.assertEqual(product.image_url, "http://www.nyu.edu")
+        product.create()
+        self.assertIsNotNone(product.created_time)
+        self.assertIsNotNone(product.updated_time)
 
     def test_add_a_product(self):
         """It should Create a product and add it to the database"""
         products = Product.all()
         self.assertEqual(len(products), 0)
-        product = Product(name="Test2", description="Test Description 2", price=321.23)
+        product = Product(
+            sku="TEST02", name="Test2", description="Test Description 2", price=321.23
+        )
         self.assertTrue(product is not None)
         self.assertEqual(product.id, None)
         product.create()

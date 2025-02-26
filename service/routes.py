@@ -44,3 +44,43 @@ def index():
 ######################################################################
 
 # Todo: Place your REST API code here ...
+
+
+######################################################################
+# LIST ALL PRODUCTS
+######################################################################
+@app.route("/products", methods=["GET"])
+def list_products():
+    """Returns all of the Products"""
+    app.logger.info("Request for product list")
+
+    products = []
+
+    # Parse any arguments from the query string
+    name = request.args.get("name")
+    sku = request.args.get("sku")
+    min_price = request.args.get("min_price")
+    max_price = request.args.get("max_price")
+
+    if sku:
+        app.logger.info("Find by sku: %s", sku)
+        products = Product.find_by_sku(sku)
+    elif name:
+        app.logger.info("Find by name: %s", name)
+        products = Product.find_by_name(name)
+    elif min_price and max_price:
+        app.logger.info("Find by price range: %s - %s", min_price, max_price)
+        products = Product.find_by_price_range(float(min_price), float(max_price))
+    elif min_price:
+        app.logger.info("Find by min price: %s", min_price)
+        products = Product.find_by_min_price(float(min_price))
+    elif max_price:
+        app.logger.info("Find by max price: %s", max_price)
+        products = Product.find_by_max_price(float(max_price))
+    else:
+        app.logger.info("Find all")
+        products = Product.all()
+
+    results = [product.serialize() for product in products]
+    app.logger.info("Returning %d products", len(results))
+    return jsonify(results), status.HTTP_200_OK

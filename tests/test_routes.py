@@ -22,10 +22,11 @@ TestProduct API Service Test Suite
 import os
 import logging
 from unittest import TestCase
+from unittest.mock import patch, MagicMock
 from urllib.parse import quote_plus
 from wsgi import app
 from service.common import status
-from service.models import db, Product
+from service.models import db, Product, DataValidationError
 from tests.factories import ProductFactory
 
 DATABASE_URI = os.getenv(
@@ -246,3 +247,113 @@ class TestYourResourceService(TestCase):
         for product in data:
             self.assertGreaterEqual(float(product["price"]), min_price)
             self.assertLessEqual(float(product["price"]), max_price)
+
+
+######################################################################
+#  T E S T   S A D   P A T H S
+######################################################################
+class TestSadPaths(TestCase):
+    """Test REST Exception Handling"""
+
+    def setUp(self):
+        """Runs before each test"""
+        self.client = app.test_client()
+
+    def test_method_not_allowed(self):
+        """It should not allow update without a product id"""
+        response = self.client.put(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def test_create_product_no_data(self):
+        """It should not Create a Product with missing data"""
+        response = self.client.post(BASE_URL, json={})
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_product_no_content_type(self):
+        """It should not Create a Product with no content type"""
+        response = self.client.post(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_create_product_wrong_content_type(self):
+        """It should not Create a Product with the wrong content type"""
+        response = self.client.post(BASE_URL, data="hello", content_type="text/html")
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_create_product_bad_price(self):
+        """It should not Create a Product with bad price data"""
+        product = ProductFactory()
+        logging.debug(product)
+        # change price to a string
+        test_product = product.serialize()
+        test_product["price"] = "not-a-number"  # invalid price
+        response = self.client.post(BASE_URL, json=test_product)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_product_duplicate_sku(self):
+        """It should not Create a Product with duplicate SKU"""
+        # Create a product with a specific SKU
+        product1 = ProductFactory()
+        product1.create()
+
+        # Try to create another product with the same SKU
+        product2 = ProductFactory()
+        product2.sku = product1.sku  # Set the same SKU
+
+        # Serialize and try to create
+        test_product = product2.serialize()
+        response = self.client.post(BASE_URL, json=test_product)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_product_bad_json(self):
+        """It should not Create a Product with bad JSON"""
+        # Try to create with invalid JSON but correct content type
+        response = self.client.post(
+            BASE_URL, data="this is not valid JSON", content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_update_product_not_found(self):
+        """It should not Update a Product that doesn't exist"""
+        # Create a fake product dictionary
+        fake_product = {
+            "id": 0,
+            "name": "fake",
+            "description": "fake",
+            "price": 10.0,
+            "sku": "fake123",
+        }
+        # Try to update a product that doesn't exist
+        response = self.client.put(f"{BASE_URL}/0", json=fake_product)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_update_product_no_content_type(self):
+        """It should not Update a Product with no content type"""
+        # Try to update without a content type
+        response = self.client.put(f"{BASE_URL}/1")
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_update_product_wrong_content_type(self):
+        """It should not Update a Product with wrong content type"""
+        # Try to update with the wrong content type
+        response = self.client.put(
+            f"{BASE_URL}/1", data="hello world", content_type="text/html"
+        )
+        self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    @patch("service.models.Product.find_by_name")
+    def test_bad_request(self, bad_request_mock):
+        """It should return a Bad Request error from Find By Name"""
+        bad_request_mock.side_effect = DataValidationError()
+        response = self.client.get(BASE_URL, query_string="name=test")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    @patch("service.models.Product.find_by_name")
+    def test_mock_search_data(self, product_find_mock):
+        """It should show how to mock data"""
+        mock_product = MagicMock()
+        mock_product.serialize.return_value = {"name": "test_product"}
+        product_find_mock.return_value = [mock_product]
+        response = self.client.get(BASE_URL, query_string="name=test_product")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data[0]["name"], "test_product")

@@ -22,6 +22,7 @@ Test cases for Pet Model
 import os
 import logging
 from unittest import TestCase
+from unittest.mock import patch
 from wsgi import app
 from service.models import Product, DataValidationError, db
 from .factories import ProductFactory
@@ -220,32 +221,32 @@ class TestProductModel(TestCaseBase):
         self.assertRaises(DataValidationError, product.deserialize, data)
 
 
-# ######################################################################
-# #  T E S T   E X C E P T I O N   H A N D L E R S
-# ######################################################################
-# class TestExceptionHandlers(TestCaseBase):
-#     """Product Model Exception Handlers"""
+######################################################################
+#  T E S T   E X C E P T I O N   H A N D L E R S
+######################################################################
+class TestExceptionHandlers(TestCaseBase):
+    """Product Model Exception Handlers"""
 
-#     @patch("service.models.db.session.commit")
-#     def test_create_exception(self, exception_mock):
-#         """It should catch a create exception"""
-#         exception_mock.side_effect = Exception()
-#         product = ProductFactory()
-#         self.assertRaises(DataValidationError, product.create)
+    @patch("service.models.db.session.commit")
+    def test_create_exception(self, exception_mock):
+        """It should catch a create exception"""
+        exception_mock.side_effect = Exception()
+        product = ProductFactory()
+        self.assertRaises(DataValidationError, product.create)
 
-#     @patch("service.models.db.session.commit")
-#     def test_update_exception(self, exception_mock):
-#         """It should catch a update exception"""
-#         exception_mock.side_effect = Exception()
-#         product = ProductFactory()
-#         self.assertRaises(DataValidationError, product.update)
+    @patch("service.models.db.session.commit")
+    def test_update_exception(self, exception_mock):
+        """It should catch a update exception"""
+        exception_mock.side_effect = Exception()
+        product = ProductFactory()
+        self.assertRaises(DataValidationError, product.update)
 
-#     @patch("service.models.db.session.commit")
-#     def test_delete_exception(self, exception_mock):
-#         """It should catch a delete exception"""
-#         exception_mock.side_effect = Exception()
-#         product = ProductFactory()
-#         self.assertRaises(DataValidationError, product.delete)
+    @patch("service.models.db.session.commit")
+    def test_delete_exception(self, exception_mock):
+        """It should catch a delete exception"""
+        exception_mock.side_effect = Exception()
+        product = ProductFactory()
+        self.assertRaises(DataValidationError, product.delete)
 
 
 ######################################################################

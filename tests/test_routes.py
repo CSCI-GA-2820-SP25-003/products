@@ -130,8 +130,8 @@ class TestYourResourceService(TestCase):
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(response.data), 0)
         # make sure they are deleted
-        response = self.client.get(f"/products/{test_product.id}")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        product = Product.find(test_product.id)
+        self.assertIsNone(product)
 
     def test_delete_non_existing_product(self):
         """It should Delete a Product even if it doesn't exist"""

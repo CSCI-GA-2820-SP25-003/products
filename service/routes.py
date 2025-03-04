@@ -114,7 +114,7 @@ def get_products(product_id):
 
 
 ######################################################################
-# CREATE A NEW PRODUCT
+# CREATE A NEW PET
 ######################################################################
 @app.route("/products", methods=["POST"])
 def create_products():

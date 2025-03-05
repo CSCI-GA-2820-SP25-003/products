@@ -6,8 +6,8 @@ All of the models are stored in this module
 
 import os
 import logging
-from flask_sqlalchemy import SQLAlchemy
 from decimal import Decimal, InvalidOperation
+from flask_sqlalchemy import SQLAlchemy
 from retry import retry
 
 # global variables for retry (must be int)
@@ -45,8 +45,6 @@ class Product(db.Model):
     ##################################################
     # Table Schema
     ##################################################
-
-    # Todo: Place the rest of your schema here...
 
     id = db.Column(db.Integer, primary_key=True)
     sku = db.Column(db.String(63), unique=True, nullable=False)

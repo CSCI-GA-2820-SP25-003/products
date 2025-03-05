@@ -2,10 +2,10 @@
 Test Factory to make fake objects for testing
 """
 
-from datetime import date
+# from datetime import date
 import factory
+from factory.fuzzy import FuzzyChoice, FuzzyText, FuzzyDecimal
 from service.models import Product
-from factory.fuzzy import FuzzyChoice, FuzzyText, FuzzyDecimal, FuzzyDate
 
 
 class ProductFactory(factory.Factory):
@@ -21,8 +21,6 @@ class ProductFactory(factory.Factory):
     name = FuzzyChoice(
         choices=["E-Reader", "Vacuum Cleaner", "Jeans", "Potato Chips", "Calculator"]
     )
-
-    # Todo: Add your other attributes here...
 
     description = FuzzyText(length=256)
     image_url = FuzzyChoice(choices=["https://www.google.com", "https://www.nyu.edu"])

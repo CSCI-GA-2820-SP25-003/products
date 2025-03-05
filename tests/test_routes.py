@@ -91,8 +91,6 @@ class TestYourResourceService(TestCase):
         data = response.get_json()
         self.assertEqual(data["name"], "Product Demo REST API Service")
 
-    # Todo: Add your test cases here...
-
     # ----------------------------------------------------------
     # TEST LIST
     # ----------------------------------------------------------

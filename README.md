@@ -1,69 +1,83 @@
-# NYU DevOps Project Template
+# NYU Devops Products Service
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 
-This is a skeleton you can use to start your projects.
-
-**Note:** _Feel free to overwrite this `README.md` file with the one that describes your project._
-
 ## Overview
 
-This project template contains starter code for your class project. The `/service` folder contains your `models.py` file for your model and a `routes.py` file for your service. The `/tests` folder has test case starter code for testing the model and the service separately. All you need to do is add your functionality. You can use the [lab-flask-tdd](https://github.com/nyu-devops/lab-flask-tdd) for code examples to copy from.
+This service provides a RESTful API for the Products database to store and manage product information. The service source code is contained in the `/service` directory and related test functions are in the `/tests` directory. The service is built using Flask, Gunicorn, and Postgres.
 
-## Automatic Setup
+## Setup
 
-The best way to use this repo is to start your own repo using it as a git template. To do this just press the green **Use this template** button in GitHub and this will become the source for your repository.
+The service can be launched through a preconfigured VSCode devcontainer or manually with `docker compose`.
 
-## Manual Setup
+### VSCode Devcontainer
 
-You can also clone this repository and then copy and paste the starter code into your project repo folder on your local computer. Be careful not to copy over your own `README.md` file so be selective in what you copy.
+1. Bottom left corner of VSCode, click the icon to open the dropdown menu
+2. Select "Reopen in Container"
 
-There are 4 hidden files that you will need to copy manually if you use the Mac Finder or Windows Explorer to copy files from this folder into your repo folder.
+### Docker Compose
 
-These should be copied using a bash shell as follows:
+e.g.
 
 ```bash
-    cp .gitignore  ../<your_repo_folder>/
-    cp .flaskenv ../<your_repo_folder>/
-    cp .gitattributes ../<your_repo_folder>/
+cd .devcontainer
+docker compose up --build -d
+docker compose exec app /bin/bash
 ```
 
-## Contents
+### Running the Service
 
-The project contains the following:
+Within the container, the service can be started with:
 
-```text
-.gitignore          - this will ignore vagrant and other metadata files
-.flaskenv           - Environment variables to configure Flask
-.gitattributes      - File to gix Windows CRLF issues
-.devcontainers/     - Folder with support for VSCode Remote Containers
-dot-env-example     - copy to .env to use environment variables
-pyproject.toml      - Poetry list of Python libraries required by your code
-
-service/                   - service python package
-├── __init__.py            - package initializer
-├── config.py              - configuration parameters
-├── models.py              - module with business models
-├── routes.py              - module with service routes
-└── common                 - common code package
-    ├── cli_commands.py    - Flask command to recreate all tables
-    ├── error_handlers.py  - HTTP error handling code
-    ├── log_handlers.py    - logging setup code
-    └── status.py          - HTTP status constants
-
-tests/                     - test cases package
-├── __init__.py            - package initializer
-├── factories.py           - Factory for testing with fake objects
-├── test_cli_commands.py   - test suite for the CLI
-├── test_models.py         - test suite for business models
-└── test_routes.py         - test suite for service routes
+```bash
+python3 -m gunicorn --log-level=info wsgi:app
 ```
 
-## License
+When using `docker compose` directly, the service port is not exported by default. Either update the compose file or access the service through the container IP address[^1], or instead use the following command to create the containers and run the service with the port mapping:
 
-Copyright (c) 2016, 2025 [John Rofrano](https://www.linkedin.com/in/JohnRofrano/). All rights reserved.
+```bash
+docker compose run --rm -p 8080:8080 app python3 -m gunicorn --log-level=info wsgi:app
+```
 
-Licensed under the Apache License. See [LICENSE](LICENSE)
+## Available API Endpoints
 
-This repository is part of the New York University (NYU) masters class: **CSCI-GA.2820-001 DevOps and Agile Methodologies** created and taught by [John Rofrano](https://cs.nyu.edu/~rofrano/), Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science, and NYU Stern School of Business.
+Routes return JSON responses and accept JSON request bodies where applicable. Routes return HTTP 200 OK unless otherwise specified, or when an erroneous request is made (returns HTTP 4xx).
+
+### GET /products
+
+List all products in the database. Takes optional query parameters to filter the results:
+
+- `name`: Filter by product name
+- `sku`: Filter by product SKU
+- `min_price`: Filter by minimum price
+- `max_price`: Filter by maximum price
+
+Always returns a collection.
+
+### GET /products/{product_id}
+
+Retrieve a specific product by ID. Returns HTTP 404 Not Found if the product is not found.
+
+### POST /products
+
+Create a new product from JSON request body and returns the created product with HTTP 201 Created.
+
+### PUT /products/{product_id}
+
+Update an existing product from JSON request body. Request body must contain all fields. Returns the updated product or HTTP 404 Not Found if the product is not found.
+
+### DELETE /products/{product_id}
+
+Delete a product by ID. Always returns HTTP 204 No Content.
+
+## Testing
+
+Tests can be run using `pytest` through the `Makefile` from within the container:
+
+```bash
+make install
+make test
+```
+
+[^1]: `docker inspect nyu-project | grep IPAddress`

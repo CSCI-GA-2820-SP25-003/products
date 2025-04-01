@@ -197,6 +197,36 @@ def delete_products(product_id):
 
 
 ######################################################################
+# LIKE A PRODUCT
+######################################################################
+@app.route("/products/<int:product_id>/like", methods=["PUT"])
+def like_products(product_id):
+    """
+    Like a Product
+
+    This endpoint will like a Product based the id specified in the path
+    """
+    app.logger.info("Request to Like a product with id [%s]", product_id)
+    check_content_type("application/json")
+
+    # Attempt to find the Product and abort if not found
+    product = Product.find(product_id)
+    if not product:
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Product with id '{product_id}' was not found."
+        )
+
+    # Like the Product with the new data
+    product.likes += 1
+
+    # Save the updates to the database
+    product.update()
+
+    app.logger.info("Product with ID: %d liked.", product.id)
+    return jsonify(product.serialize()), status.HTTP_200_OK
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 

@@ -59,6 +59,7 @@ class Product(db.Model):
     updated_time = db.Column(
         db.DateTime, nullable=False, default=db.func.now(), onupdate=db.func.now()
     )
+    likes = db.Column(db.Integer, nullable=False, default=0)
 
     def __repr__(self):
         return f"<Product {self.name} id=[{self.id}]>"
@@ -110,6 +111,7 @@ class Product(db.Model):
             "description": self.description,
             "price": str(self.price),
             "image_url": self.image_url,
+            "likes": self.likes,
             "created_time": (
                 self.created_time.isoformat() if self.created_time else None
             ),

@@ -24,4 +24,5 @@ class ProductFactory(factory.Factory):
 
     description = FuzzyText(length=256)
     image_url = FuzzyChoice(choices=["https://www.google.com", "https://www.nyu.edu"])
+    likes = 0
     price = FuzzyDecimal(10.00, 500.00, precision=2)

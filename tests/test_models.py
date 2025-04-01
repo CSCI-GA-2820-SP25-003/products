@@ -141,6 +141,27 @@ class TestProductModel(TestCaseBase):
         self.assertEqual(products[0].id, original_id)
         self.assertEqual(products[0].description, "testing")
 
+    def test_like_a_product(self):
+        """It should Like a Product"""
+        product = ProductFactory()
+        logging.debug(product)
+        product.id = None
+        product.create()
+        logging.debug(product)
+        self.assertIsNotNone(product.id)
+        # Change it and save it
+        product.likes += 1
+        original_id = product.id
+        product.update()
+        self.assertEqual(product.id, original_id)
+        self.assertEqual(product.likes, 1)
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        products = Product.all()
+        self.assertEqual(len(products), 1)
+        self.assertEqual(products[0].id, original_id)
+        self.assertEqual(products[0].likes, 1)
+
     def test_update_no_id(self):
         """It should not Update a Product with no id"""
         product = ProductFactory()

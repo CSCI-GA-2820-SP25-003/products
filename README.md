@@ -12,14 +12,18 @@ This service provides a RESTful API for the Products database to store and manag
 
 ## Setup
 
-The service can be launched through a preconfigured VSCode devcontainer or manually with `docker compose`.
+The service can be launched through one of the following options:
 
-### VSCode Devcontainer
+- VSCode Devcontainer
+- Docker Compose
+- Kubernetes (locally via k3d)
+
+### 1. VSCode Devcontainer
 
 1. Bottom left corner of VSCode, click the icon to open the dropdown menu
 2. Select "Reopen in Container"
 
-### Docker Compose
+### 2. Docker Compose
 
 e.g.
 
@@ -29,8 +33,30 @@ docker compose up --build -d
 docker compose exec app /bin/bash
 ```
 
-### Running the Service
+### 3. Kubernetes (k3d)
 
+Create a k8s cluster
+```bash
+make cluster
+```
+
+Build and push docker images
+```bash
+docker build -t products:1.0 .
+docker tag products:1.0 cluster-registry:5000/products:1.0
+docker push cluster-registry:5000/products:1.0
+```
+
+Deploy k8s resources
+```bash
+kubectl apply -f k8s/postgres/
+kubectl apply -f k8s/
+```
+
+
+## Running the Service 
+
+#### 1. VScode Devcontainer / Docker Compose
 Within the container, the service can be started with:
 
 ```bash
@@ -44,6 +70,22 @@ When using `docker compose` directly, the service port is not exported by defaul
 
 ```bash
 docker compose run --rm -p 8080:8080 app bash -c "make install && make run"
+```
+
+#### 2. Kubernetes (k3d)
+Check if all PODs are running
+```bash
+kubectl get pods
+kubectl get services
+kubectl get ingress
+```
+
+Then access the application at `http://localhost:8080/`
+
+e.g.
+
+```bash
+curl http://localhost:8080/
 ```
 
 ## Structure
@@ -60,6 +102,7 @@ The internal database has the following structure:
 - `image_url` (str < 256): URL to product image
 - `created_time` (datetime): Timestamp of creation, not null
 - `updated_time` (datetime): Timestamp of last update, not null
+- `likes` (int): Number of likes the product receives
 
 The `image_url` field is not validated but should be a valid URL to an image.
 
@@ -79,6 +122,8 @@ The format of the product JSON returned by some routes is as follows:
 - `image_url` (str): URL to product image
 - `created_time` (str): UTC Timestamp of creation in ISO 8601 format
 - `updated_time` (str): UTC Timestamp of last update in ISO 8601 format
+- `likes` (int): Number of likes the product receives
+
 
 ### Product Request JSON
 
@@ -232,6 +277,33 @@ Example response:
 ### DELETE /products/{product_id}
 
 Delete a product by ID. Always returns HTTP 204 No Content.
+
+
+### PUT /products/{product_id}/like
+
+Like an existing product by ID. Increments the product's likes count. Returns the updated product or HTTP 404 Not Found if the product is not found.
+
+Example request: `PUT /products/1012/like`:
+
+```json
+{}
+```
+
+Example response:
+
+```json
+{
+    "created_time": "2025-03-05T07:13:08.443724",
+    "description": "New description",
+    "id": 1012,
+    "image_url": "https://example.com",
+    "name": "test product updated",
+    "price": "400.00",
+    "sku": "123123123",
+    "updated_time": "2025-03-05T07:20:42.123456",
+    "likes": 1
+}
+```
 
 ## Testing
 

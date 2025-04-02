@@ -4,6 +4,8 @@
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
 [![Build Status](https://github.com/mahithabushap/products/actions/workflows/main.yml/badge.svg)](https://github.com/mahithabushap/products/actions)
 [![Codecov](https://codecov.io/gh/mahithabushap/products/branch/main/graph/badge.svg)](https://codecov.io/gh/mahithabushap/products)
+![CI](https://github.com/mahithabushap/products/actions/workflows/ci.yml/badge.svg)
+
 
 
 ## Overview

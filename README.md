@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
-[![Build Status](https://github.com/mahithabushap/lab-github-actions/actions/workflows/main.yml/badge.svg)](https://github.com/mahithabushap/products/actions)
+[![Build Status](https://github.com/mahithabushap/products/actions/workflows/main.yml/badge.svg)](https://github.com/mahithabushap/products/actions)
 [![Codecov](https://codecov.io/gh/mahithabushap/products/branch/main/graph/badge.svg)](https://codecov.io/gh/mahithabushap/products)
 
 

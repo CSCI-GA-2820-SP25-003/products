@@ -171,6 +171,26 @@ class TestYourResourceService(TestCase):
         self.assertEqual(updated_product["description"], "unknown")
 
     # ----------------------------------------------------------
+    # TEST LIKE
+    # ----------------------------------------------------------
+    def test_like_product(self):
+        """It should Like an existing Product"""
+        # create a product to like
+        test_product = ProductFactory()
+        response = self.client.post(BASE_URL, json=test_product.serialize())
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+        # like the product
+        new_product = response.get_json()
+        logging.debug(new_product)
+        response = self.client.put(
+            f"{BASE_URL}/{new_product['id']}/like", json=new_product
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        liked_product = response.get_json()
+        self.assertEqual(liked_product["likes"], 1)
+
+    # ----------------------------------------------------------
     # TEST DELETE
     # ----------------------------------------------------------
     def test_delete_product(self):

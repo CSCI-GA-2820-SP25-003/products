@@ -5,7 +5,7 @@
 [![Build Status](https://github.com/CSCI-GA-2820-SP25-003/products/actions/workflows/main.yml/badge.svg)](https://github.com/mahithabushap/products/actions)
 [![Codecov](https://codecov.io/gh/mahithabushap/products/branch/main/graph/badge.svg)](https://codecov.io/gh/mahithabushap/products)
 
-
+[![codecov](https://codecov.io/gh/CSCI-GA-2820-SP25-003/products/graph/badge.svg?token=RQ9NKJ0LIX)](https://codecov.io/gh/CSCI-GA-2820-SP25-003/products)
 
 
 ## Overview

@@ -19,7 +19,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container: 
-      image: quay.io/rofrano/nyu-devops-base:sp25
+      image: quay.io/rofrano/pipeline-selenium:latest
       options: --user root
 
     services:
@@ -41,20 +41,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       
-      - name: Install Chrome and Driver
-        run: |
-          apt-get update && apt-get install -y wget gnupg curl unzip
-          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /usr/share/keyrings/google-chrome.gpg
-          echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list
-          apt-get update && apt-get install -y google-chrome-stable
-          CHROME_DRIVER_VERSION=135.0.7049.42
-          wget -q -O /tmp/chromedriver.zip https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROME_DRIVER_VERSION}/linux64/chromedriver-linux64.zip
-          unzip /tmp/chromedriver.zip -d /opt/chromedriver
-          ln -s /opt/chromedriver/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
-          rm /tmp/chromedriver.zip
-      
-
-
       - name: Install dependencies
         run: |
           python -m pip install -U pip pipenv

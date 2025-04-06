@@ -18,7 +18,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: quay.io/rofrano/nyu-devops-base:sp25
+    container: 
+      image: quay.io/rofrano/nyu-devops-base:sp25
+      options: --user root
 
     services:
       postgres:
@@ -54,7 +56,7 @@ jobs:
           curl -i http://localhost:8080/health
           echo "\n*** SERVER IS RUNNING ***"
         env:
-          DATABASE_URI: "postgresql+psycopg://postgres:pgs3cr3t@postgres:5432/testdb"
+          DATABASE_URI: "postgresql+psycopg://postgres:pgs3cr3t@postgres:5432/postgres"
 
       - name: Run Integration Tests
         run: behave

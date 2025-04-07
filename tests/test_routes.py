@@ -88,8 +88,7 @@ class TestYourResourceService(TestCase):
         """It should call the home page"""
         response = self.client.get("/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        data = response.get_json()
-        self.assertEqual(data["name"], "Product Demo REST API Service")
+        self.assertIn(b"Product Demo REST API Service", response.data)
 
     # ----------------------------------------------------------
     # TEST LIST

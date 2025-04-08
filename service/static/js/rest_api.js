@@ -191,25 +191,41 @@ $(function () {
     // ****************************************
 
     $("#search-btn").click(function () {
-
         let name = $("#product_name").val();
         let sku = $("#product_sku").val();
-
-        let queryString = ""
-
-        if (name) {
-            queryString += 'name=' + name
-        }
+        let min_price = $("#product_min_price").val();
+        let max_price = $("#product_max_price").val();
+    
+        let queryString = "";
+    
+        // Add parameters to query string as needed
         if (sku) {
-            if (queryString.length > 0) {
-                queryString += '&sku=' + sku
-            } else {
-                queryString += 'sku=' + sku
-            }
+            queryString += 'sku=' + sku;
         }
-
+        
+        if (name) {
+            if (queryString.length > 0) {
+                queryString += '&';
+            }
+            queryString += 'name=' + name;
+        }
+        
+        if (min_price) {
+            if (queryString.length > 0) {
+                queryString += '&';
+            }
+            queryString += 'min_price=' + min_price;
+        }
+        
+        if (max_price) {
+            if (queryString.length > 0) {
+                queryString += '&';
+            }
+            queryString += 'max_price=' + max_price;
+        }
+    
         $("#flash_message").empty();
-
+    
         let ajax = $.ajax({
             type: "GET",
             url: `/products?${queryString}`,

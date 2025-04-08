@@ -16,8 +16,8 @@ from behave import when, then  # pylint: disable=no-name-in-module
 
 from selenium.webdriver.common.by import By
 
-# from selenium.webdriver.support.ui import Select, WebDriverWait
-# from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.ui import WebDriverWait  # , Select
+from selenium.webdriver.support import expected_conditions
 
 ID_PREFIX = "product_"  # 修改为产品前缀
 
@@ -56,12 +56,33 @@ def step_impl(context: Any, text_string: str) -> None:
     assert text_string not in element.text
 
 
-# @when('I set the "{element_name}" to "{text_string}"')
-# def step_impl(context: Any, element_name: str, text_string: str) -> None:
-#     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
-#     element = context.driver.find_element(By.ID, element_id)
-#     element.clear()
-#     element.send_keys(text_string)
+@when('I set the "{element_name}" to "{text_string}"')
+def step_impl(context: Any, element_name: str, text_string: str) -> None:
+    element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
+    element = context.driver.find_element(By.ID, element_id)
+    element.clear()
+    element.send_keys(text_string)
+
+
+@when("I clear all form fields")
+def step_impl(context: Any) -> None:
+    """Clears all form fields"""
+    # Get a list of all input fields with the product prefix
+    input_fields = context.driver.find_elements(
+        By.CSS_SELECTOR, f"input[id^='{ID_PREFIX}']"
+    )
+    # Also get textarea fields if you have them
+    textarea_fields = context.driver.find_elements(
+        By.CSS_SELECTOR, f"textarea[id^='{ID_PREFIX}']"
+    )
+
+    # Clear each input field
+    for field in input_fields:
+        field.clear()
+
+    # Clear each textarea field
+    for field in textarea_fields:
+        field.clear()
 
 
 # @when('I select "{text}" in the "{element_name}" dropdown')
@@ -117,38 +138,38 @@ def step_impl(context: Any, text_string: str) -> None:
 # ##################################################################
 
 
-# @when('I press the "{button}" button')
-# def step_impl(context: Any, button: str) -> None:
-#     button_id = button.lower().replace(" ", "_") + "-btn"
-#     context.driver.find_element(By.ID, button_id).click()
+@when('I press the "{button}" button')
+def step_impl(context: Any, button: str) -> None:
+    button_id = button.lower().replace(" ", "_") + "-btn"
+    context.driver.find_element(By.ID, button_id).click()
 
 
-# @then('I should see "{name}" in the results')
-# def step_impl(context: Any, name: str) -> None:
-#     found = WebDriverWait(context.driver, context.wait_seconds).until(
-#         expected_conditions.text_to_be_present_in_element(
-#             (By.ID, "search_results"), name
-#         )
-#     )
-#     assert found
+@then('I should see "{name}" in the results')
+def step_impl(context: Any, name: str) -> None:
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, "search_results"), name
+        )
+    )
+    assert found
 
 
-# @then('I should not see "{name}" in the results')
-# def step_impl(context: Any, name: str) -> None:
-#     element = context.driver.find_element(By.ID, "search_results")
-#     assert name not in element.text
+@then('I should not see "{name}" in the results')
+def step_impl(context: Any, name: str) -> None:
+    element = context.driver.find_element(By.ID, "search_results")
+    assert name not in element.text
 
 
-# @then('I should see the message "{message}"')
-# def step_impl(context: Any, message: str) -> None:
-#     # Uncomment next line to take a screenshot of the web page for debugging
-#     # save_screenshot(context, message)
-#     found = WebDriverWait(context.driver, context.wait_seconds).until(
-#         expected_conditions.text_to_be_present_in_element(
-#             (By.ID, "flash_message"), message
-#         )
-#     )
-#     assert found
+@then('I should see the message "{message}"')
+def step_impl(context: Any, message: str) -> None:
+    # Uncomment next line to take a screenshot of the web page for debugging
+    # save_screenshot(context, message)
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, "flash_message"), message
+        )
+    )
+    assert found
 
 
 # ##################################################################

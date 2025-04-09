@@ -27,6 +27,7 @@ Scenario: Create a Product
     And I set the "Image URL" to "https://example.com/airpods.jpg"
     And I press the "Create" button
     Then I should see the message "Success"
+    
     When I copy the "Id" field
     And I press the "Clear" button
     Then the "Id" field should be empty
@@ -36,6 +37,7 @@ Scenario: Create a Product
     And the "Price" field should be empty
     And the "Image URL" field should be empty
     And the "Likes" field should be empty
+    
     When I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see the message "Success"
@@ -45,3 +47,68 @@ Scenario: Create a Product
     And I should see "249.99" in the "Price" field
     And I should see "https://example.com/airpods.jpg" in the "Image URL" field
     And I should see "0" in the "Likes" field
+
+
+Scenario: Test all filtering options sequentially
+    When I visit the "Home Page"
+    Then I should see "Product Demo RESTful Service" in the title
+    
+    # Search by name
+    When I clear all form fields
+    And I set the "name" to "Jeans"
+    And I press the "Search" button
+    Then I should see "Jeans" in the results
+    And I should not see "E-Reader" in the results
+    And I should not see "Vacuum Cleaner" in the results
+    And I should not see "Potato Chips" in the results
+    And I should see the message "Success"
+    
+    # Search by SKU
+    When I clear all form fields
+    And I set the "sku" to "SKU123456"
+    And I press the "Search" button
+    Then I should see "E-Reader" in the results
+    And I should not see "Vacuum Cleaner" in the results
+    And I should not see "Jeans" in the results
+    And I should not see "Potato Chips" in the results
+    And I should see the message "Success"
+    
+    # Search by minimum price
+    When I clear all form fields
+    And I set the "min_price" to "100.00"
+    And I press the "Search" button
+    Then I should see "E-Reader" in the results
+    And I should see "Vacuum Cleaner" in the results
+    And I should not see "Jeans" in the results
+    And I should not see "Potato Chips" in the results
+    And I should see the message "Success"
+    
+    # Search by maximum price
+    When I clear all form fields
+    And I set the "max_price" to "50.00"
+    And I press the "Search" button
+    Then I should see "Jeans" in the results
+    And I should see "Potato Chips" in the results
+    And I should not see "E-Reader" in the results
+    And I should not see "Vacuum Cleaner" in the results
+    And I should see the message "Success"
+    
+    # Search by price range
+    When I clear all form fields
+    And I set the "min_price" to "40.00"
+    And I set the "max_price" to "200.00"
+    And I press the "Search" button
+    Then I should see "E-Reader" in the results
+    And I should see "Vacuum Cleaner" in the results
+    And I should see "Jeans" in the results
+    And I should not see "Potato Chips" in the results
+    And I should see the message "Success"
+    
+    # Find all products
+    When I clear all form fields
+    And I press the "Search" button
+    Then I should see "E-Reader" in the results
+    And I should see "Vacuum Cleaner" in the results
+    And I should see "Jeans" in the results
+    And I should see "Potato Chips" in the results
+    And I should see the message "Success"

@@ -18,9 +18,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container: 
-      image: quay.io/rofrano/pipeline-selenium:latest
-      options: --user root
+    container: quay.io/rofrano/pipeline-selenium:latest
 
     services:
       postgres:

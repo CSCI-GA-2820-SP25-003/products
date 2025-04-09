@@ -12,6 +12,8 @@ $(function () {
         $("#product_description").val(res.description);
         $("#product_price").val(res.price);
         $("#product_image_url").val(res.image_url);
+        $("#product_created_time").val(res.created_time);
+        $("#product_updated_time").val(res.updated_time);
         $("#product_likes").val(res.likes);
     }
 
@@ -22,6 +24,8 @@ $(function () {
         $("#product_description").val("");
         $("#product_price").val("");
         $("#product_image_url").val("");
+        $("#product_created_time").val("");
+        $("#product_updated_time").val("");
         $("#product_likes").val("");
     }
 
@@ -187,25 +191,41 @@ $(function () {
     // ****************************************
 
     $("#search-btn").click(function () {
-
         let name = $("#product_name").val();
         let sku = $("#product_sku").val();
-
-        let queryString = ""
-
-        if (name) {
-            queryString += 'name=' + name
-        }
+        let min_price = $("#product_min_price").val();
+        let max_price = $("#product_max_price").val();
+    
+        let queryString = "";
+    
+        // Add parameters to query string as needed
         if (sku) {
-            if (queryString.length > 0) {
-                queryString += '&sku=' + sku
-            } else {
-                queryString += 'sku=' + sku
-            }
+            queryString += 'sku=' + sku;
         }
-
+        
+        if (name) {
+            if (queryString.length > 0) {
+                queryString += '&';
+            }
+            queryString += 'name=' + name;
+        }
+        
+        if (min_price) {
+            if (queryString.length > 0) {
+                queryString += '&';
+            }
+            queryString += 'min_price=' + min_price;
+        }
+        
+        if (max_price) {
+            if (queryString.length > 0) {
+                queryString += '&';
+            }
+            queryString += 'max_price=' + max_price;
+        }
+    
         $("#flash_message").empty();
-
+    
         let ajax = $.ajax({
             type: "GET",
             url: `/products?${queryString}`,
@@ -223,12 +243,14 @@ $(function () {
             table += '<th class="col-md-3">Description</th>'
             table += '<th class="col-md-1">Price</th>'
             table += '<th class="col-md-2">Image URL</th>'
+            table += '<th class="col-md-2">Created</th>'
+            table += '<th class="col-md-2">Updated</th>'
             table += '<th class="col-md-1">Likes</th>'
             table += '</tr></thead><tbody>'
             let firstProduct = "";
             for(let i = 0; i < res.length; i++) {
                 let product = res[i];
-                table +=  `<tr id="row_${i}"><td>${product.id}</td><td>${product.sku}</td><td>${product.name}</td><td>${product.description}</td><td>${product.price}</td><td>${product.image_url}</td><td>${product.likes}</td></tr>`;
+                table += `<tr id="row_${i}"><td>${product.id}</td><td>${product.sku}</td><td>${product.name}</td><td>${product.description}</td><td>${product.price}</td><td>${product.image_url}</td><td>${product.created_time}</td><td>${product.updated_time}</td><td>${product.likes}</td></tr>`;
                 if (i == 0) {
                     firstProduct = product;
                 }

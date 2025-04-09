@@ -9,7 +9,7 @@ For information on Waiting until elements are present in the HTML see:
 
 import re
 
-# import logging
+import logging
 from typing import Any
 
 from behave import when, then  # pylint: disable=no-name-in-module
@@ -99,34 +99,34 @@ def step_impl(context: Any) -> None:
 #     assert element.first_selected_option.text == text
 
 
-# @then('the "{element_name}" field should be empty')
-# def step_impl(context: Any, element_name: str) -> None:
-#     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
-#     element = context.driver.find_element(By.ID, element_id)
-#     assert element.get_attribute("value") == ""
+@then('the "{element_name}" field should be empty')
+def step_impl(context: Any, element_name: str) -> None:
+    element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
+    element = context.driver.find_element(By.ID, element_id)
+    assert element.get_attribute("value") == ""
 
 
-# ##################################################################
-# # These two function simulate copy and paste
-# ##################################################################
-# @when('I copy the "{element_name}" field')
-# def step_impl(context: Any, element_name: str) -> None:
-#     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
-#     element = WebDriverWait(context.driver, context.wait_seconds).until(
-#         expected_conditions.presence_of_element_located((By.ID, element_id))
-#     )
-#     context.clipboard = element.get_attribute("value")
-#     logging.info("Clipboard contains: %s", context.clipboard)
+##################################################################
+# These two function simulate copy and paste
+##################################################################
+@when('I copy the "{element_name}" field')
+def step_impl(context: Any, element_name: str) -> None:
+    element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    context.clipboard = element.get_attribute("value")
+    logging.info("Clipboard contains: %s", context.clipboard)
 
 
-# @when('I paste the "{element_name}" field')
-# def step_impl(context: Any, element_name: str) -> None:
-#     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
-#     element = WebDriverWait(context.driver, context.wait_seconds).until(
-#         expected_conditions.presence_of_element_located((By.ID, element_id))
-#     )
-#     element.clear()
-#     element.send_keys(context.clipboard)
+@when('I paste the "{element_name}" field')
+def step_impl(context: Any, element_name: str) -> None:
+    element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.clear()
+    element.send_keys(context.clipboard)
 
 
 # ##################################################################
@@ -180,15 +180,15 @@ def step_impl(context: Any, message: str) -> None:
 # ##################################################################
 
 
-# @then('I should see "{text_string}" in the "{element_name}" field')
-# def step_impl(context: Any, text_string: str, element_name: str) -> None:
-#     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
-#     found = WebDriverWait(context.driver, context.wait_seconds).until(
-#         expected_conditions.text_to_be_present_in_element_value(
-#             (By.ID, element_id), text_string
-#         )
-#     )
-#     assert found
+@then('I should see "{text_string}" in the "{element_name}" field')
+def step_impl(context: Any, text_string: str, element_name: str) -> None:
+    element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element_value(
+            (By.ID, element_id), text_string
+        )
+    )
+    assert found
 
 
 # @when('I change "{element_name}" to "{text_string}"')

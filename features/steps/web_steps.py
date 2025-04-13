@@ -191,11 +191,11 @@ def step_impl(context: Any, text_string: str, element_name: str) -> None:
     assert found
 
 
-# @when('I change "{element_name}" to "{text_string}"')
-# def step_impl(context: Any, element_name: str, text_string: str) -> None:
-#     element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
-#     element = WebDriverWait(context.driver, context.wait_seconds).until(
-#         expected_conditions.presence_of_element_located((By.ID, element_id))
-#     )
-#     element.clear()
-#     element.send_keys(text_string)
+@when('I change "{element_name}" to "{text_string}"')
+def step_impl(context: Any, element_name: str, text_string: str) -> None:
+    element_id = ID_PREFIX + element_name.lower().replace(" ", "_")
+    element = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.clear()
+    element.send_keys(text_string)

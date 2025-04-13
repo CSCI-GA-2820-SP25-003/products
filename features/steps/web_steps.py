@@ -19,7 +19,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait  # , Select
 from selenium.webdriver.support import expected_conditions
 
-ID_PREFIX = "product_"  # 修改为产品前缀
+ID_PREFIX = "product_"
 
 
 def save_screenshot(context: Any, filename: str) -> None:

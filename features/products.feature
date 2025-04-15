@@ -139,3 +139,34 @@ Scenario: Update a Product
     Then I should see the message "Success"
     And I should see "Book" in the results
     And I should not see "E-Reader" in the results
+
+
+Scenario: Delete a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "Vacuum Cleaner"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Vacuum Cleaner" in the "Name" field
+
+    When I press the "Delete" button
+    And I confirm the deletion
+    Then I should see the message "Product has been Deleted!"
+    
+    When I press the "Clear" button
+    And I set the "Name" to "Vacuum Cleaner"
+    And I press the "Search" button
+    Then I should not see "Vacuum Cleaner" in the results
+    And I should see the message "No products found matching the search criteria"
+
+Feature: Delete a product
+  Scenario: Successfully deleting an existing product
+    Given the product exists
+    When I delete the product
+    Then the product should be removed
+    And I should see a flash message "Product has been deleted!"
+
+  Scenario: Deleting a product that does not exist
+    Given no product exists with the given ID
+    When I delete the product
+    Then I should see a flash message "Server error!"
+

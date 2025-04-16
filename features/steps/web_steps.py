@@ -235,11 +235,12 @@ def step_impl(context: Any):
 # ##################################################################
 # ##################################################################
 
-@when('I press the "{button}" button')
+@when('I press the "{button}" button using XPath')
 def step_impl(context: Any, button: str) -> None:
     button_element = context.driver.find_element(By.XPATH, f'//button[text()="{button}"]')
     button_element.click()
-    time.sleep(1)  
+    time.sleep(1)
+
 
 @when('I confirm the deletion')
 def step_impl(context: Any) -> None:

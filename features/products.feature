@@ -140,7 +140,6 @@ Scenario: Update a Product
     And I should see "Book" in the results
     And I should not see "E-Reader" in the results
 
-delete-product-bdd
 
 Scenario: Delete a Product
     When I visit the "Home Page"
@@ -216,4 +215,4 @@ Scenario: Like a Product
     And I press the "Like" button
     Then I should see the message "Success"
     And I should see "1" in the "Likes" field
-master
+

@@ -159,7 +159,6 @@ Scenario: Delete a Product
     And I should see the message "No products found matching the search criteria"
 
 
-
 Scenario: View a Product
     When I visit the "Home Page"
     And I set the "Name" to "E-Reader"

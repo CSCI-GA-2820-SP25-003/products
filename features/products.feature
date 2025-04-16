@@ -141,8 +141,9 @@ Scenario: Update a Product
     And I should not see "E-Reader" in the results
 
 
-Scenario: Delete a Product
-    When I visit the "Home Page"
+
+  Scenario: Delete a Product
+    Given I visit the "Home Page"
     And I set the "Name" to "Vacuum Cleaner"
     And I press the "Search" button
     Then I should see the message "Success"

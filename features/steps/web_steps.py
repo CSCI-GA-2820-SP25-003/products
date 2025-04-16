@@ -236,37 +236,22 @@ def step_impl(context: Any):
 # ##################################################################
 
 
+@when('I press the "Delete" button')
+def step_impl(context):
+    delete_button = context.driver.find_element(By.ID, "delete-btn")
+    delete_button.click()
+
 @when('I confirm the deletion')
-def step_impl(context: Any) -> None:
-    confirm_button = context.driver.find_element(By.ID, "confirm-delete-btn")
-    confirm_button.click()
+def step_impl(context):
+    alert = context.driver.switch_to.alert
+    alert.accept()
 
+@then('I should see the message "Product has been Deleted!"')
+def step_impl(context):
+    message = context.driver.find_element(By.ID, "flash_message").text
+    assert "Product has been Deleted!" in message
 
-@given('the product exists')
-def step_impl(context: Any) -> None:
-    context.execute_steps('''
-        When I visit the "Home Page"
-        And I set the "Name" to "Vacuum Cleaner"
-        And I set the "Price" to "199.99"
-        And I set the "Category" to "Home Appliances"
-        And I press the "Create" button
-        Then I should see the message "Product has been Created!"
-    ''')
-
-
-@when('I delete the product')
-def step_impl(context: Any) -> None:
-    context.execute_steps('''
-        When I set the "Name" to "Vacuum Cleaner"
-        And I press the "Search" button
-        And I press the "Delete" button
-        And I confirm the deletion
-    ''')
-
-
-@given('no product exists with the given ID')
-def step_impl(context: Any) -> None:
-    context.execute_steps('''
-        When I press the "Clear" button
-        And I set the "Id" to "9999"
-    ''')
+@then('I should not see "{text}" in the results')
+def step_impl(context, text):
+    body = context.driver.find_element(By.TAG_NAME, "body").text
+    assert text not in body

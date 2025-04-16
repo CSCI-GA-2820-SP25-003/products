@@ -158,7 +158,7 @@ Scenario: Delete a Product
     Then I should not see "Vacuum Cleaner" in the results
     And I should see the message "No products found matching the search criteria"
 
-Feature: Delete a product
+
   Scenario: Successfully deleting an existing product
     Given the product exists
     When I delete the product

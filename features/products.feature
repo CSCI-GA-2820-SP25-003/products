@@ -140,6 +140,27 @@ Scenario: Update a Product
     And I should see "Book" in the results
     And I should not see "E-Reader" in the results
 
+
+
+  Scenario: Delete a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "Jeans"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Jeans" in the "Name" field
+    And I should see "SKU345678" in the "SKU" field
+
+    When I copy the "Id" field
+    And I press the "Delete" button
+    Then I should see the message "Product has been Deleted!"
+
+    When I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Not Found"
+
+
+
 Scenario: View a Product
     When I visit the "Home Page"
     And I set the "Name" to "E-Reader"
@@ -183,3 +204,4 @@ Scenario: Like a Product
     And I press the "Like" button
     Then I should see the message "Success"
     And I should see "1" in the "Likes" field
+

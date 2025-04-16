@@ -168,3 +168,18 @@ Scenario: View a Product
 
     When I press the "Modal Close" button
     Then The modal should be hidden
+
+Scenario: Like a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "MacBook Air"
+    And I set the "SKU" to "SKU1010"
+    And I set the "Description" to "Lightweight laptop"
+    And I set the "Price" to "1099.99"
+    And I set the "Image URL" to "https://example.com/macbook.jpg"
+    And I press the "Create" button
+    Then I should see the message "Success"
+
+    When I copy the "Id" field
+    And I press the "Like" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Likes" field

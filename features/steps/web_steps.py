@@ -237,25 +237,20 @@ def step_impl(context: Any):
 
 @when('I press the "Delete" button')
 def step_impl(context: Any) -> None:
-    # Reuse the existing generic "press button" step
+    # Use the generic button press step to handle the "Delete" button
     context.execute_steps('When I press the "Delete" button')
-
 
 @when('I confirm the deletion')
 def step_impl(context) -> None:
     alert = context.driver.switch_to.alert
     alert.accept()
 
-
 @then('I should see the message "{message}"')
 def step_impl(context: Any, message: str) -> None:
     flash_message = context.driver.find_element(By.ID, "flash_message").text
     assert message in flash_message, f"Expected '{message}' in flash message but got '{flash_message}'"
 
-
 @then('I should not see "{product_name}" in the results')
 def step_impl(context: Any, product_name: str) -> None:
     body = context.driver.find_element(By.TAG_NAME, "body").text
     assert product_name not in body, f"Expected not to find '{product_name}' in the results"
-
-

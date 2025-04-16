@@ -199,3 +199,33 @@ def step_impl(context: Any, element_name: str, text_string: str) -> None:
     )
     element.clear()
     element.send_keys(text_string)
+
+###
+
+@when("I press the first result")
+def step_impl(context: Any) -> None:
+    element_id = "row_0"
+    context.driver.find_element(By.ID, element_id).click()
+
+@then('I should see "{text_string}" in the modal "{element_name}" field')
+def step_impl(context: Any, text_string: str, element_name: str) -> None:
+    element_id = "modal_" + element_name.lower().replace(" ", "_")
+    print(element_id)
+    found = WebDriverWait(context.driver, context.wait_seconds).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, element_id), text_string
+        )
+    )
+    assert found
+
+@then("The modal should be visible")
+def step_impl(context: Any):
+    element = context.driver.find_element(By.ID, "overlay")
+    style = element.get_attribute("style")
+    assert "display: flex" in style
+
+@then("The modal should be hidden")
+def step_impl(context: Any):
+    element = context.driver.find_element(By.ID, "overlay")
+    style = element.get_attribute("style")
+    assert "display: none" in style

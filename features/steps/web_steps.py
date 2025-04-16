@@ -169,7 +169,8 @@ def step_impl(context: Any, message: str) -> None:
             (By.ID, "flash_message"), message
         )
     )
-    assert found
+    element = context.driver.find_element(By.ID, "flash_message")
+    assert found and message in element.text
 
 
 # ##################################################################
@@ -200,12 +201,15 @@ def step_impl(context: Any, element_name: str, text_string: str) -> None:
     element.clear()
     element.send_keys(text_string)
 
+
 ###
+
 
 @when("I press the first result")
 def step_impl(context: Any) -> None:
     element_id = "row_0"
     context.driver.find_element(By.ID, element_id).click()
+
 
 @then('I should see "{text_string}" in the modal "{element_name}" field')
 def step_impl(context: Any, text_string: str, element_name: str) -> None:
@@ -218,11 +222,13 @@ def step_impl(context: Any, text_string: str, element_name: str) -> None:
     )
     assert found
 
+
 @then("The modal should be visible")
 def step_impl(context: Any):
     element = context.driver.find_element(By.ID, "overlay")
     style = element.get_attribute("style")
     assert "display: flex" in style
+
 
 @then("The modal should be hidden")
 def step_impl(context: Any):
@@ -231,10 +237,9 @@ def step_impl(context: Any):
     assert "display: none" in style
 
 
-
 # ##################################################################
 # ##################################################################
-
+""" 
 @when('I visit the "{page}"')
 def step_impl(context, page):
     context.driver.get(context.base_url)
@@ -285,4 +290,4 @@ def step_impl(context):
 def step_impl(context):
     flash_message = context.driver.find_element(By.ID, "flash_message").text
     assert "Not Found" in flash_message, f"Expected 'Not Found' message but got '{flash_message}'"
-
+ """

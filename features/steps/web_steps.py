@@ -233,23 +233,34 @@ def step_impl(context: Any):
 # ##################################################################
 # ##################################################################
 
+@given('I am on the "{page}" page')
+def step_impl(context, page):
+    url_map = {
+        "Products": "http://localhost:5000/products",
+        # Add other pages here if needed
+    }
+    context.browser.get(url_map[page])
+    time.sleep(1)
 
-@when('I press the "Delete" button')
-def step_impl(context):
-    delete_button = context.browser.find_element(By.ID, "delete-btn")
-    delete_button.click()
+@given('I see a product named "{product_name}"')
+def step_impl(context, product_name):
+    try:
+        product_element = context.browser.find_element(By.XPATH, f"//*[contains(text(), '{product_name}')]")
+        assert product_element is not None
+    except NoSuchElementException:
+        assert False, f"Product named '{product_name}' not found on the page."
 
-@then('I should see the message "Product has been Deleted!"')
-def step_impl(context):
-    message = context.browser.find_element(By.ID, "flash_message")
-    assert "Product has been Deleted!" in message.text
+@when('I press the "{button}" button')
+def step_impl(context, button):
+    try:
+        button_element = context.browser.find_element(By.XPATH, f"//button[contains(text(), '{button}')]")
+        button_element.click()
+        time.sleep(1)
+    except NoSuchElementException:
+        assert False, f'Button with text "{button}" not found.'
 
-@then('I should see the message "Missing product ID"')
-def step_impl(context):
-    message = context.browser.find_element(By.ID, "flash_message")
-    assert "Missing product ID" in message.text
-
-@then('I should see the message "Not Found"')
-def step_impl(context):
-    message = context.browser.find_element(By.ID, "flash_message")
-    assert "Not Found" in message.text
+@then('the product "{product_name}" should no longer be listed')
+def step_impl(context, product_name):
+    time.sleep(1)  # Give time for the DOM to update after delete
+    product_elements = context.browser.find_elements(By.XPATH, f"//*[contains(text(), '{product_name}')]")
+    assert len(product_elements) == 0, f"Product '{product_name}' is still listed!"

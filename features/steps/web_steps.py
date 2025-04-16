@@ -235,13 +235,14 @@ def step_impl(context: Any):
 # ##################################################################
 # ##################################################################
 
-@when('I press the "Delete" button')
-def step_impl(context: Any) -> None:
-    # Use the generic button press step to handle the "Delete" button
-    context.execute_steps('When I press the "Delete" button')
+@when('I press the "{button}" button')
+def step_impl(context: Any, button: str) -> None:
+    button_element = context.driver.find_element(By.XPATH, f'//button[text()="{button}"]')
+    button_element.click()
+    time.sleep(1)  
 
 @when('I confirm the deletion')
-def step_impl(context) -> None:
+def step_impl(context: Any) -> None:
     alert = context.driver.switch_to.alert
     alert.accept()
 

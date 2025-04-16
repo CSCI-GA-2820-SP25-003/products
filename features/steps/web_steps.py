@@ -229,3 +229,59 @@ def step_impl(context: Any):
     element = context.driver.find_element(By.ID, "overlay")
     style = element.get_attribute("style")
     assert "display: none" in style
+
+
+# ##################################################################
+# # This code works because of the following naming convention:
+# ##################################################################
+
+@when('I confirm the deletion')
+def step_impl(context):
+ 
+    confirm_button = context.driver.find_element(By.ID, "confirm-delete")  # or By.XPATH, By.CLASS_NAME, etc.
+    confirm_button.click()
+
+
+@then('the product should be removed')
+def step_impl(context):
+    # This assumes product info is cleared from form or result disappears
+    name_field = context.driver.find_element(By.ID, "product_name")  # change ID to match your form
+    assert name_field.get_attribute("value") == "", "Product name field should be empty after deletion"
+
+@given('the product exists')
+def step_impl(context):
+    # Create product first (you might already have this function)
+    context.execute_steps('''
+        When I visit the "Home Page"
+        And I set the "Name" to "Vacuum Cleaner"
+        And I set the "Price" to "199.99"
+        And I set the "Category" to "Home Appliances"
+        And I press the "Create" button
+        Then I should see the message "Product has been Created!"
+    ''')
+
+
+@when('I delete the product')
+def step_impl(context):
+    context.execute_steps('''
+        When I set the "Name" to "Vacuum Cleaner"
+        And I press the "Search" button
+        And I press the "Delete" button
+        And I confirm the deletion
+    ''')
+
+@given('no product exists with the given ID')
+def step_impl(context):
+    # Clear the form and set an invalid ID
+    context.execute_steps('''
+        When I press the "Clear" button
+        And I set the "Id" to "9999"  # assuming this ID doesn't exist
+    ''')
+
+
+@then('I should see a flash message "{message}"')
+def step_impl(context, message):
+    flash_msg = context.driver.find_element(By.ID, "flash_message")  # adjust selector
+    assert message in flash_msg.text, f'Expected flash message "{message}", but got "{flash_msg.text}"'
+
+

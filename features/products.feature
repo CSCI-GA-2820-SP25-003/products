@@ -149,7 +149,7 @@ Scenario: Update a Product
     Then I should see the message "Success"
     And I should see "Vacuum Cleaner" in the "Name" field
 
-    When I press the "Delete" button
+    When I press the "Delete" button using XPath
     And I confirm the deletion
     Then I should see the message "Product has been Deleted!"
 

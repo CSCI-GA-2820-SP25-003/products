@@ -141,12 +141,14 @@ Scenario: Update a Product
     And I should not see "E-Reader" in the results
 
 
-Scenario: Delete a product successfully
-    When I visit the "Home Page"
-    And I set the "Name" to "Vacuum Cleaner"
-    And I press the "Search" button
-    Then I should see the message "Success"
-    And I should see "Vacuum Cleaner" in the results
+Feature: Delete a Product
+
+  Scenario: Successfully deleting a product from the list
+    Given I am on the "Products" page
+    And I see a product named "Test Product"
+    When I press the "Delete" button
+    Then the product "Test Product" should no longer be listed
+
 
     When I press the first result
     And I copy the "Id" field

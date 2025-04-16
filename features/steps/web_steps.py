@@ -235,24 +235,54 @@ def step_impl(context: Any):
 # ##################################################################
 # ##################################################################
 
-@when('I press the "{button}" button using XPath')
-def step_impl(context: Any, button: str) -> None:
+@when('I visit the "{page}"')
+def step_impl(context, page):
+    context.driver.get(context.base_url)
+    time.sleep(1)
+
+@when('I set the "{field}" to "{value}"')
+def step_impl(context, field, value):
+    input_element = context.driver.find_element(By.ID, field.lower())
+    input_element.clear()
+    input_element.send_keys(value)
+    time.sleep(1)
+
+@when('I press the "{button}" button')
+def step_impl(context, button):
     button_element = context.driver.find_element(By.XPATH, f'//button[text()="{button}"]')
     button_element.click()
     time.sleep(1)
 
-
-@when('I confirm the deletion')
-def step_impl(context: Any) -> None:
-    alert = context.driver.switch_to.alert
-    alert.accept()
-
 @then('I should see the message "{message}"')
-def step_impl(context: Any, message: str) -> None:
+def step_impl(context, message):
     flash_message = context.driver.find_element(By.ID, "flash_message").text
     assert message in flash_message, f"Expected '{message}' in flash message but got '{flash_message}'"
 
-@then('I should not see "{product_name}" in the results')
-def step_impl(context: Any, product_name: str) -> None:
-    body = context.driver.find_element(By.TAG_NAME, "body").text
-    assert product_name not in body, f"Expected not to find '{product_name}' in the results"
+@then('I should see "{value}" in the "{field}" field')
+def step_impl(context, value, field):
+    field_element = context.driver.find_element(By.ID, field.lower())
+    actual_value = field_element.get_attribute("value")
+    assert actual_value == value, f"Expected '{value}' in '{field}' field but got '{actual_value}'"
+
+@when('I copy the "Id" field')
+def step_impl(context):
+    id_element = context.driver.find_element(By.ID, "id")
+    context.product_id = id_element.get_attribute("value")
+
+@when('I paste the "Id" field')
+def step_impl(context):
+    id_element = context.driver.find_element(By.ID, "id")
+    id_element.clear()
+    id_element.send_keys(context.product_id)
+    time.sleep(1)
+
+@then('I should see the message "Product has been Deleted!"')
+def step_impl(context):
+    flash_message = context.driver.find_element(By.ID, "flash_message").text
+    assert "Product has been Deleted!" in flash_message, f"Expected delete message but got '{flash_message}'"
+
+@then('I should see the message "Not Found"')
+def step_impl(context):
+    flash_message = context.driver.find_element(By.ID, "flash_message").text
+    assert "Not Found" in flash_message, f"Expected 'Not Found' message but got '{flash_message}'"
+

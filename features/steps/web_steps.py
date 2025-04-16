@@ -235,12 +235,10 @@ def step_impl(context: Any):
 # ##################################################################
 # ##################################################################
 
-
-
 @when('I press the "Delete" button')
 def step_impl(context: Any) -> None:
-    delete_button_id = "delete-btn"
-    context.driver.find_element(By.ID, delete_button_id).click()
+    # Reuse the existing generic "press button" step
+    context.execute_steps('When I press the "Delete" button')
 
 
 @when('I confirm the deletion')
@@ -259,4 +257,5 @@ def step_impl(context: Any, message: str) -> None:
 def step_impl(context: Any, product_name: str) -> None:
     body = context.driver.find_element(By.TAG_NAME, "body").text
     assert product_name not in body, f"Expected not to find '{product_name}' in the results"
+
 

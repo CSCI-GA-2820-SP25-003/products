@@ -229,3 +229,27 @@ def step_impl(context: Any):
     element = context.driver.find_element(By.ID, "overlay")
     style = element.get_attribute("style")
     assert "display: none" in style
+
+# ##################################################################
+# ##################################################################
+
+
+@when('I press the "Delete" button')
+def step_impl(context):
+    delete_button = context.browser.find_element(By.ID, "delete-btn")
+    delete_button.click()
+
+@then('I should see the message "Product has been Deleted!"')
+def step_impl(context):
+    message = context.browser.find_element(By.ID, "flash_message")
+    assert "Product has been Deleted!" in message.text
+
+@then('I should see the message "Missing product ID"')
+def step_impl(context):
+    message = context.browser.find_element(By.ID, "flash_message")
+    assert "Missing product ID" in message.text
+
+@then('I should see the message "Not Found"')
+def step_impl(context):
+    message = context.browser.find_element(By.ID, "flash_message")
+    assert "Not Found" in message.text

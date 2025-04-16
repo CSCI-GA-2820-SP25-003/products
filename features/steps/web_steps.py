@@ -233,23 +233,6 @@ def step_impl(context: Any):
 # ##################################################################
 # ##################################################################
 
-@given('I am on the "{page}" page')
-def step_impl(context, page):
-    url_map = {
-        "Products": "http://localhost:5000/products",
-        # Add other pages here if needed
-    }
-    context.browser.get(url_map[page])
-    time.sleep(1)
-
-@given('I see a product named "{product_name}"')
-def step_impl(context, product_name):
-    try:
-        product_element = context.browser.find_element(By.XPATH, f"//*[contains(text(), '{product_name}')]")
-        assert product_element is not None
-    except NoSuchElementException:
-        assert False, f"Product named '{product_name}' not found on the page."
-
 @when('I press the "{button}" button')
 def step_impl(context, button):
     try:
@@ -259,8 +242,35 @@ def step_impl(context, button):
     except NoSuchElementException:
         assert False, f'Button with text "{button}" not found.'
 
-@then('the product "{product_name}" should no longer be listed')
-def step_impl(context, product_name):
-    time.sleep(1)  # Give time for the DOM to update after delete
-    product_elements = context.browser.find_elements(By.XPATH, f"//*[contains(text(), '{product_name}')]")
-    assert len(product_elements) == 0, f"Product '{product_name}' is still listed!"
+@when('I fill in the "{field}" field with "{value}"')
+def step_impl(context, field, value):
+    field_element = context.browser.find_element(By.NAME, field)
+    field_element.clear()
+    field_element.send_keys(value)
+
+@when('I select "{option}" from the "{dropdown}" dropdown')
+def step_impl(context, option, dropdown):
+    dropdown_element = context.browser.find_element(By.NAME, dropdown)
+    dropdown_element.click()
+    option_element = context.browser.find_element(By.XPATH, f"//option[text()='{option}']")
+    option_element.click()
+
+@then('I should see the "{text}" text on the page')
+def step_impl(context, text):
+    try:
+        context.browser.find_element(By.XPATH, f"//*[contains(text(), '{text}')]")
+    except NoSuchElementException:
+        assert False, f'Text "{text}" not found on the page.'
+
+@then('I should not see the "{text}" text on the page')
+def step_impl(context, text):
+    try:
+        context.browser.find_element(By.XPATH, f"//*[contains(text(), '{text}')]")
+        assert False, f'Text "{text}" should not be on the page.'
+    except NoSuchElementException:
+        pass
+
+@then('I should be redirected to the "{url}" page')
+def step_impl(context, url):
+    current_url = context.browser.current_url
+    assert current_url == url, f'Expected URL: {url}, but got: {current_url}'

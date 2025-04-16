@@ -236,22 +236,20 @@ def step_impl(context: Any):
 # ##################################################################
 
 
-@when('I press the "Delete" button')
-def step_impl(context):
-    delete_button = context.driver.find_element(By.ID, "delete-btn")
-    delete_button.click()
 
 @when('I confirm the deletion')
 def step_impl(context):
     alert = context.driver.switch_to.alert
     alert.accept()
+    time.sleep(1)  # allow time for UI update if necessary
 
-@then('I should see the message "Product has been Deleted!"')
-def step_impl(context):
-    message = context.driver.find_element(By.ID, "flash_message").text
-    assert "Product has been Deleted!" in message
+@then('I should see the message "{message}"')
+def step_impl(context, message):
+    flash_message = context.driver.find_element(By.ID, "flash_message").text
+    assert message in flash_message, f"Expected '{message}' in flash message but got '{flash_message}'"
 
 @then('I should not see "{text}" in the results')
 def step_impl(context, text):
     body = context.driver.find_element(By.TAG_NAME, "body").text
-    assert text not in body
+    assert text not in body, f"Expected not to find '{text}' in the results"
+

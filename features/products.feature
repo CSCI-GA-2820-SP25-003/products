@@ -140,6 +140,7 @@ Scenario: Update a Product
     And I should see "Book" in the results
     And I should not see "E-Reader" in the results
 
+delete-product-bdd
 
 Scenario: Delete a Product
     When I visit the "Home Page"
@@ -170,3 +171,49 @@ Feature: Delete a product
     When I delete the product
     Then I should see a flash message "Server error!"
 
+
+
+Scenario: View a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "E-Reader"
+    And I press the "Search" button
+    And I press the first result
+    Then The modal should be visible
+    And I should see "E-Reader" in the modal "Name" field
+    And I should see "SKU123456" in the modal "SKU" field
+    And I should see "Digital reader" in the modal "Description" field
+    And I should see "129.99" in the modal "Price" field
+    And I should see "https://www.google.com" in the modal "Image URL" field
+    And I should see "0" in the modal "Likes" field
+
+    When I press the "Modal Retrieve" button
+    Then I should see the message "Success"
+    And The modal should be hidden
+    And I should see "E-Reader" in the "Name" field
+    And I should see "SKU123456" in the "SKU" field
+    And I should see "Digital reader" in the "Description" field
+    And I should see "129.99" in the "Price" field
+    And I should see "https://www.google.com" in the "Image URL" field
+    And I should see "0" in the "Likes" field
+
+    When I press the first result
+    Then The modal should be visible
+
+    When I press the "Modal Close" button
+    Then The modal should be hidden
+
+Scenario: Like a Product
+    When I visit the "Home Page"
+    And I set the "Name" to "MacBook Air"
+    And I set the "SKU" to "SKU1010"
+    And I set the "Description" to "Lightweight laptop"
+    And I set the "Price" to "1099.99"
+    And I set the "Image URL" to "https://example.com/macbook.jpg"
+    And I press the "Create" button
+    Then I should see the message "Success"
+
+    When I copy the "Id" field
+    And I press the "Like" button
+    Then I should see the message "Success"
+    And I should see "1" in the "Likes" field
+master

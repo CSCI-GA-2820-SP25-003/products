@@ -143,21 +143,22 @@ Scenario: Update a Product
 
 
   Scenario: Delete a Product
-    Given I visit the "Home Page"
-    And I set the "Name" to "Vacuum Cleaner"
+    When I visit the "Home Page"
+    And I set the "Name" to "Jeans"
     And I press the "Search" button
     Then I should see the message "Success"
-    And I should see "Vacuum Cleaner" in the "Name" field
+    And I should see "Jeans" in the "Name" field
+    And I should see "SKU345678" in the "SKU" field
 
-    When I press the "Delete" button using XPath
-    And I confirm the deletion
+    When I copy the "Id" field
+    And I press the "Delete" button
     Then I should see the message "Product has been Deleted!"
 
     When I press the "Clear" button
-    And I set the "Name" to "Vacuum Cleaner"
-    And I press the "Search" button
-    Then I should not see "Vacuum Cleaner" in the results
-    And I should see the message "No products found matching the search criteria"
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Not Found"
+
 
 
 Scenario: View a Product

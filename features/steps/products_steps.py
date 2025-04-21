@@ -18,14 +18,18 @@ WAIT_TIMEOUT = 60
 def step_impl(context):
     """Delete all Products and load new ones"""
     # Get a list all of the products
-    rest_endpoint = f"{context.base_url}/products"
-    context.resp = requests.get(rest_endpoint, timeout=WAIT_TIMEOUT)
+    rest_endpoint = f"{context.base_url}/api/products"
+    context.resp = requests.get(
+        rest_endpoint, timeout=WAIT_TIMEOUT, headers=context.headers
+    )
     expect(context.resp.status_code).equal_to(HTTP_200_OK)
 
     # and delete them one by one
     for product in context.resp.json():
         context.resp = requests.delete(
-            f"{rest_endpoint}/{product['id']}", timeout=WAIT_TIMEOUT
+            f"{rest_endpoint}/{product['id']}",
+            timeout=WAIT_TIMEOUT,
+            headers=context.headers,
         )
         expect(context.resp.status_code).equal_to(HTTP_204_NO_CONTENT)
 
@@ -39,5 +43,10 @@ def step_impl(context):
             "image_url": row["image_url"],
             "likes": int(row["likes"]) if "likes" in row else 0,
         }
-        context.resp = requests.post(rest_endpoint, json=payload, timeout=WAIT_TIMEOUT)
+        context.resp = requests.post(
+            rest_endpoint,
+            json=payload,
+            timeout=WAIT_TIMEOUT,
+            headers=context.headers,
+        )
         expect(context.resp.status_code).equal_to(HTTP_201_CREATED)

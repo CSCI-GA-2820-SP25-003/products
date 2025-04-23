@@ -181,6 +181,19 @@ class Product(db.Model):
         return cls.query.session.get(cls, product_id)
 
     @classmethod
+    def remove_all(cls):
+        """Removes all products from the database (use for testing)"""
+        logger.info("Deleting all products from the database")
+        try:
+            num_deleted = cls.query.delete()
+            db.session.commit()
+            logger.info("Deleted %s products", num_deleted)
+        except Exception as e:
+            db.session.rollback()
+            logger.error("Failed to delete all products: %s", e)
+            raise
+
+    @classmethod
     def find_by_name(cls, name: str) -> list:
         """Returns all Products with the given name
 

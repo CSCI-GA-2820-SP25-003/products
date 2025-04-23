@@ -157,7 +157,7 @@ Scenario: Update a Product
     When I press the "Clear" button
     And I paste the "Id" field
     And I press the "Retrieve" button
-    Then I should see the message "Not Found"
+    Then I should see the message "was not found"
 
 
 

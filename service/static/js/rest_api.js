@@ -1,4 +1,7 @@
 $(function () {
+    $.ajaxSetup({
+        headers: { "X-Api-Key": "nyu-test-key-123456" }
+    });
 
     // ****************************************
     //  U T I L I T Y   F U N C T I O N S
@@ -61,7 +64,7 @@ $(function () {
         
         let ajax = $.ajax({
             type: "POST",
-            url: "/products",
+            url: "/api/products",
             contentType: "application/json",
             data: JSON.stringify(data),
         });
@@ -104,7 +107,7 @@ $(function () {
 
         let ajax = $.ajax({
                 type: "PUT",
-                url: `/products/${product_id}`,
+                url: `/api/products/${product_id}`,
                 contentType: "application/json",
                 data: JSON.stringify(data)
             })
@@ -132,7 +135,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/products/${product_id}`,
+            url: `/api/products/${product_id}`,
             contentType: "application/json",
             data: ''
         })
@@ -161,7 +164,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "DELETE",
-            url: `/products/${product_id}`,
+            url: `/api/products/${product_id}`,
             contentType: "application/json",
             data: '',
         })
@@ -185,7 +188,7 @@ $(function () {
     
         let ajax = $.ajax({
             type: "PUT",
-            url: `/products/${product_id}/like`,
+            url: `/api/products/${product_id}/like`,
             contentType: "application/json",
             data: "{}"  // required even if empty
         });
@@ -252,7 +255,7 @@ $(function () {
     
         let ajax = $.ajax({
             type: "GET",
-            url: `/products?${queryString}`,
+            url: `/api/products?${queryString}`,
             contentType: "application/json",
             data: ''
         })
@@ -382,7 +385,7 @@ $(function () {
         let product_id = $("#modal_id").text();
         let ajax = $.ajax({
             type: "GET",
-            url: `/products/${product_id}`,
+            url: `/api/products/${product_id}`,
             contentType: "application/json",
             data: ''
         })

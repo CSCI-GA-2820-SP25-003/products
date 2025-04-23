@@ -144,21 +144,21 @@ product_args.add_argument(
 ######################################################################
 # Authorization Decorator
 ######################################################################
-def token_required(func):
-    """Decorator to require a token for this endpoint"""
+# def token_required(func):
+#     """Decorator to require a token for this endpoint"""
 
-    @wraps(func)
-    def decorated(*args, **kwargs):
-        token = None
-        if "X-Api-Key" in request.headers:
-            token = request.headers["X-Api-Key"]
+#     @wraps(func)
+#     def decorated(*args, **kwargs):
+#         token = None
+#         if "X-Api-Key" in request.headers:
+#             token = request.headers["X-Api-Key"]
 
-        if app.config.get("API_KEY") and app.config["API_KEY"] == token:
-            return func(*args, **kwargs)
+#         if app.config.get("API_KEY") and app.config["API_KEY"] == token:
+#             return func(*args, **kwargs)
 
-        return {"message": "Invalid or missing token"}, 401
+#         return {"message": "Invalid or missing token"}, 401
 
-    return decorated
+#     return decorated
 
 
 ######################################################################
@@ -226,7 +226,7 @@ class ProductResource(Resource):
     @api.response(400, "The posted Product data was not valid")
     @api.expect(product_model)
     @api.marshal_with(product_model)
-    @token_required
+    # @token_required
     def put(self, product_id):
         """
         Update a Product
@@ -251,7 +251,7 @@ class ProductResource(Resource):
     # ------------------------------------------------------------------
     @api.doc("delete_products", security="apikey")
     @api.response(204, "Product deleted")
-    @token_required
+    # @token_required
     def delete(self, product_id):
         """
         Delete a Product
@@ -315,7 +315,7 @@ class ProductCollection(Resource):
     @api.response(400, "The posted data was not valid")
     @api.expect(create_model)
     @api.marshal_with(product_model, code=201)
-    @token_required
+    # @token_required
     def post(self):
         """
         Creates a Product
@@ -337,7 +337,7 @@ class ProductCollection(Resource):
     # ------------------------------------------------------------------
     @api.doc("delete_all_products", security="apikey")
     @api.response(204, "All Products deleted")
-    @token_required
+    # @token_required
     def delete(self):
         """
         Delete all Product

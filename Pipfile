@@ -28,6 +28,7 @@ selenium = "==4.16.0"  # newer versions do not work
 requests = "~=2.31.0"
 compare3 = "~=1.0.4"
 parse = "~=1.19.0"
+flask-restx = "*"
 
 [requires]
 python_version = "3.11"

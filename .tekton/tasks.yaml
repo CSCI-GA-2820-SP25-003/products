@@ -234,3 +234,66 @@ spec:
           echo Applying manifests in $(inputs.params.manifest-dir) directory
           oc apply -f $(inputs.params.manifest-dir)
           echo -----------------------------------
+
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: behave
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/categories: Testing
+    tekton.dev/pipelines.minVersion: "0.17.0"
+    tekton.dev/tags: python, bdd, behave
+    tekton.dev/displayName: "Behave BDD Tests"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  workspaces:
+    - name: source
+  description: >-
+    This task runs BDD tests using Behave and Selenium.
+    It uses Pipfile to install required dependencies.
+  params:
+    - name: base-url
+      description: The base URL of the deployed application under test
+      type: string
+    - name: wait-seconds
+      description: How many seconds to wait for the service to be ready
+      type: string
+      default: "60"
+    - name: driver
+      description: The web driver to use (chrome or firefox)
+      type: string
+      default: "chrome"
+  steps:
+    - name: behave
+      image: quay.io/rofrano/pipeline-selenium
+      workingDir: $(workspaces.source.path)
+      env:
+        - name: BASE_URL
+          value: $(params.base-url)
+        - name: WAIT_SECONDS
+          value: $(params.wait-seconds)
+        - name: DRIVER
+          value: $(params.driver)
+      script: |
+        #!/bin/bash
+        set -e
+        export PATH=$PATH:$HOME/.local/bin:
+
+        echo "***** Installing dependencies with Pipenv *****"
+        if [ -e "Pipfile" ]; then
+          echo "Found Pipfile: installing with pipenv..."
+          python -m pip install --upgrade pip pipenv
+          pipenv requirements --dev > requirements.txt
+        else
+          echo "Pipfile not found. Exiting."
+          exit 1
+        fi
+
+        echo "***** Installing packages from requirements.txt *****"
+        python -m pip install --user -r requirements.txt
+
+        echo "***** Running Behave BDD tests against $BASE_URL *****"
+        behave

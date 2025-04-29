@@ -20,6 +20,18 @@ spec:
       description: The name of the image to build
       name: IMAGE_NAME
       type: string
+    - default: https://products-mz3921-dev.apps.rm1.0a51.p1.openshiftapps.com/
+      description: The external route to test against
+      name: BASE_URL
+      type: string
+    - default: "2"
+      description: Wait time before running behave
+      name: WAIT_SECONDS
+      type: string
+    - default: chrome
+      description: WebDriver to use for BDD (e.g. chrome)
+      name: DRIVER
+      type: string
   tasks:
     - name: pylint
       params:

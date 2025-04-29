@@ -24,7 +24,7 @@ spec:
       description: The external route to test against
       name: BASE_URL
       type: string
-    - default: "2"
+    - default: "60"
       description: Wait time before running behave
       name: WAIT_SECONDS
       type: string

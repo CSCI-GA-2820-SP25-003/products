@@ -4,63 +4,23 @@ metadata:
   name: cd-pipeline
 spec:
   params:
-    - name: GIT_REPO
+    - default: 'https://github.com/CSCI-GA-2820-SP25-003/products'
+      description: The URL to the git repo
+      name: GIT_REPO
       type: string
-      description: The URL to the Git repository
-    - name: GIT_REF
+    - default: master
+      description: The reference (branch or ref)
+      name: GIT_REF
       type: string
-      default: master
-      description: The Git branch or reference
-    - name: APP_NAME
-      type: string
-      default: products-app
+    - default: products
       description: Name of the application
-    - name: IMAGE_NAME
+      name: APP_NAME
       type: string
-      default: 'image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.APP_NAME):latest'
-      description: Fully qualified image name to build and push
-
+    - default: 'image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.APP_NAME):latest'
+      description: The name of the image to build
+      name: IMAGE_NAME
+      type: string
   tasks:
-    - name: git-clone
-      params:
-        - name: url
-          value: $(params.GIT_REPO)
-        - name: revision
-          value: $(params.GIT_REF)
-        - name: refspec
-          value: ''
-        - name: submodules
-          value: 'true'
-        - name: depth
-          value: '1'
-        - name: sslVerify
-          value: 'true'
-        - name: crtFileName
-          value: ca-bundle.crt
-        - name: subdirectory
-          value: ''
-        - name: sparseCheckoutDirectories
-          value: ''
-        - name: deleteExisting
-          value: 'true'
-        - name: httpProxy
-          value: ''
-        - name: httpsProxy
-          value: ''
-        - name: noProxy
-          value: ''
-        - name: verbose
-          value: 'true'
-        - name: gitInitImage
-          value: 'gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2'
-        - name: userHome
-          value: /home/git
-      taskRef:
-        kind: Task
-        name: git-clone
-      workspaces:
-        - name: output
-          workspace: pipeline-workspace
     - name: pylint
       params:
         - name: image
@@ -79,7 +39,7 @@ spec:
       workspaces:
         - name: source
           workspace: pipeline-workspace
-    - name: pytest
+    - name: testing
       params:
         - name: pytest-args
           value: []
@@ -122,7 +82,7 @@ spec:
           value: 'false'
       runAfter:
         - pylint
-        - pytest
+        - testing
       taskRef:
         kind: Task
         name: buildah
@@ -142,6 +102,46 @@ spec:
         name: deploy-image
       workspaces:
         - name: source
+          workspace: pipeline-workspace
+    - name: git-clone
+      params:
+        - name: url
+          value: $(params.GIT_REPO)
+        - name: revision
+          value: $(params.GIT_REF)
+        - name: refspec
+          value: ''
+        - name: submodules
+          value: 'true'
+        - name: depth
+          value: '1'
+        - name: sslVerify
+          value: 'true'
+        - name: crtFileName
+          value: ca-bundle.crt
+        - name: subdirectory
+          value: ''
+        - name: sparseCheckoutDirectories
+          value: ''
+        - name: deleteExisting
+          value: 'true'
+        - name: httpProxy
+          value: ''
+        - name: httpsProxy
+          value: ''
+        - name: noProxy
+          value: ''
+        - name: verbose
+          value: 'true'
+        - name: gitInitImage
+          value: 'gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.40.2'
+        - name: userHome
+          value: /home/git
+      taskRef:
+        kind: Task
+        name: git-clone
+      workspaces:
+        - name: output
           workspace: pipeline-workspace
   workspaces:
     - name: pipeline-workspace

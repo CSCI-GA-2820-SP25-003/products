@@ -19,6 +19,10 @@ spec:
       type: string
       default: 'image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(params.APP_NAME):latest'
       description: Fully qualified image name to build and push
+    - name: BASE_URL
+      type: string
+      default: 'https://cd-pipeline-mzhao23-dev.apps.rm1.0a51.p1.openshiftapps.com/'
+      description: Deployed service base_url
 
   tasks:
     - name: git-clone
@@ -140,6 +144,21 @@ spec:
       taskRef:
         kind: Task
         name: deploy-image
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
+    - name: behave
+      taskRef:
+        name: behave
+      params:
+        - name: base-url
+          value: $(params.BASE_URL)
+        - name: wait-seconds
+          value: $(params.WAIT_SECONDS)
+        - name: driver
+          value: $(params.DRIVER)
+      runAfter:
+        - deploy-image
       workspaces:
         - name: source
           workspace: pipeline-workspace

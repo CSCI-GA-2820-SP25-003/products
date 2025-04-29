@@ -21,7 +21,7 @@ spec:
       description: Fully qualified image name to build and push
     - name: BASE_URL
       type: string
-      default: 'https://cd-pipeline-mzhao23-dev.apps.rm1.0a51.p1.openshiftapps.com/'
+      default: 'https://products-mz3921-dev.apps.rm1.0a51.p1.openshiftapps.com/'
       description: Deployed service base_url
 
   tasks:

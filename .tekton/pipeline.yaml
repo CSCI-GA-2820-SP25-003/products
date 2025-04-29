@@ -143,5 +143,20 @@ spec:
       workspaces:
         - name: output
           workspace: pipeline-workspace
+    - name: behave
+      taskRef:
+        name: behave
+      params:
+        - name: base-url
+          value: $(params.BASE_URL)
+        - name: wait-seconds
+          value: $(params.WAIT_SECONDS)
+        - name: driver
+          value: $(params.DRIVER)
+      runAfter:
+        - deploy-image
+      workspaces:
+        - name: source
+          workspace: pipeline-workspace
   workspaces:
     - name: pipeline-workspace

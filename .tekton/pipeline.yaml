@@ -24,14 +24,6 @@ spec:
       description: The external route to test against
       name: BASE_URL
       type: string
-    - default: "60"
-      description: Wait time before running behave
-      name: WAIT_SECONDS
-      type: string
-    - default: chrome
-      description: WebDriver to use for BDD (e.g. chrome)
-      name: DRIVER
-      type: string
   tasks:
     - name: pylint
       params:
@@ -162,9 +154,9 @@ spec:
         - name: base-url
           value: $(params.BASE_URL)
         - name: wait-seconds
-          value: $(params.WAIT_SECONDS)
+          value: '60'
         - name: driver
-          value: $(params.DRIVER)
+          value: chrome
       runAfter:
         - deploy-image
       workspaces:

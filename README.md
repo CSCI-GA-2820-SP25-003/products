@@ -10,6 +10,8 @@
 
 This service provides a RESTful API for the Products database to store and manage product information. The service source code is contained in the `/service` directory and related test functions are in the `/tests` directory. The service is built using Flask, Gunicorn, and Postgres.
 
+The service is currently deployed at the following URL: https://products-mz3921-dev.apps.rm1.0a51.p1.openshiftapps.com/
+
 ## Setup
 
 The service can be launched through one of the following options:
@@ -136,6 +138,8 @@ The `description` and `image_url` fields are optional and can be omitted.
 All other fields (`sku`, `name`, `price`) are required.
 
 ## Available API Endpoints
+
+The API base URL is `/api`. The routes below can be accessed using the base URL in addition to the paths below.
 
 Routes return JSON responses and accept JSON request bodies where applicable. Routes return HTTP 200 OK unless otherwise specified, or when an erroneous request is made (returns HTTP 4xx).
 
@@ -305,7 +309,7 @@ Example response:
 }
 ```
 
-## Testing
+## Testing  
 
 Tests can be run using `pytest` through the `Makefile` from within the container:
 

@@ -2,7 +2,7 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Python](https://img.shields.io/badge/Language-Python-blue.svg)](https://python.org/)
-[![CI Build](https://github.com/CSCI-GA-2820-SP25-003/products/actions/workflows/workflow.yml/badge.svg)](https://github.com/CSCI-GA-2820-SP25-003/products/actions/workflows/workflow.yml)
+[![CI Build](https://github.com/CSCI-GA-2820-SP25-003/products/actions/workflows/tdd-test.yml/badge.svg)](https://github.com/CSCI-GA-2820-SP25-003/products/actions/workflows/tdd-test.yml)
 [![codecov](https://codecov.io/gh/CSCI-GA-2820-SP25-003/products/graph/badge.svg?token=RQ9NKJ0LIX)](https://codecov.io/gh/CSCI-GA-2820-SP25-003/products)
 
 
@@ -319,3 +319,10 @@ make test
 ```
 
 [^1]: `docker inspect nyu-project | grep IPAddress`
+
+## License
+Copyright (c) 2016, 2025 John Rofrano. All rights reserved.
+
+Licensed under the Apache License. See LICENSE
+
+This repository is part of the New York University (NYU) masters class: CSCI-GA.2820-001 DevOps and Agile Methodologies created and taught by John Rofrano, Adjunct Instructor, NYU Courant Institute, Graduate Division, Computer Science, and NYU Stern School of Business.
